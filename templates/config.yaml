@@ -1,0 +1,200 @@
+version: 1
+
+# -----------------------------------
+# Global Generation Constants
+# -----------------------------------
+generation:
+  start_time: "2026-01-01T00:00:00Z"
+  end_time: "2026-01-07T23:59:59Z"
+  total_logs: 5000
+  normal_weight: 0.5
+  
+
+# -----------------------------------
+# Global Field Generators
+# 
+# -----------------------------------
+fields:
+  username:
+    type: faker
+    provider: user_name
+
+  ip:
+    type: faker
+    provider: ipv4
+
+  action:
+    type: str
+    values:
+      - login
+      - logout
+      - view
+      - update
+      - download
+      - upload
+      - query
+      - refresh
+
+  resource:
+    type: str
+    values:
+      - dashboard
+      - profile
+      - reports
+      - settings
+      - module/a1
+      - module/b2
+      - module/c1
+      - search
+
+  status_code:
+    type: int_c
+    values:
+      - 200
+      - 200
+      - 200
+      - 201
+      - 400
+      - 401
+      - 403
+      - 500
+
+  latency:
+    type: float
+    distribution: normal
+    mean: 120
+    std: 35
+
+  request_count:
+    type: int_d
+    distribution: normal
+    mean: 3
+    std: 1
+
+  payload_size:
+    type: int_d
+    distribution: normal
+    mean: 512
+    std: 120
+
+# -----------------------------------
+# Log Formatting Configuration
+# Engine will use this to build each line
+# -----------------------------------
+log_format:
+  timestamp_format: "%Y-%m-%dT%H:%M:%SZ"
+  structure: "{timestamp} [{level}] - {service} ∣ ip={ip} - {message}"
+
+# -----------------------------------
+# Templates
+# -----------------------------------
+templates:
+
+  - name: user_activity
+    level: INFO
+    category: normal
+    service: api-service
+    message: "User {username} performed {action} on {resource} status={status_code} latency={latency}ms"
+
+  - name: periodic_refresh
+    level: INFO
+    category: normal
+    service: api-service
+    message: "User {username} performed refresh on {resource} status={status_code} latency={latency}ms"
+
+  - name: small_batch_request
+    level: INFO
+    category: normal
+    service: api-service
+    message: "User {username} performed query on {resource} status={status_code} latency={latency}ms requests={request_count}"
+
+  - name: file_transfer
+    level: INFO
+    category: normal
+    service: storage-service
+    message: "User {username} performed upload on {resource} status={status_code} latency={latency}ms size={payload_size}kb"
+
+  - name: user_activity
+    level: INFO
+    category: normal
+    service: api-service
+    message: "User {username} performed {action} on {resource} status={status_code} latency={latency}ms"
+
+  - name: periodic_refresh
+    level: INFO
+    category: normal
+    service: api-service
+    message: "User {username} performed refresh on {resource} status={status_code} latency={latency}ms"
+
+  - name: small_batch_request
+    level: INFO
+    category: normal
+    service: api-service
+    message: "User {username} performed query on {resource} status={status_code} latency={latency}ms requests={request_count}"
+
+  - name: file_transfer
+    level: INFO
+    category: normal
+    service: storage-service
+    message: "User {username} performed upload on {resource} status={status_code} latency={latency}ms size={payload_size}kb"
+
+
+  - name: high_latency_request
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed {action} on {resource} status=200 latency=950ms"
+
+  - name: repeated_requests
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed query on {resource} status=200 latency={latency}ms requests=25"
+
+  - name: large_payload_transfer
+    level: INFO
+    category: anomaly
+    service: storage-service
+    message: "User {username} performed upload on {resource} status=200 latency={latency}ms size=9000kb"
+
+  - name: suspicious_status_pattern
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed {action} on {resource} status=403 latency={latency}ms"
+
+  - name: error_burst
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed {action} on {resource} status=500 latency=600ms"
+  
+  - name: high_latency_request
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed {action} on {resource} status=200 latency=950ms"
+
+  - name: repeated_requests
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed query on {resource} status=200 latency={latency}ms requests=25"
+
+  - name: large_payload_transfer
+    level: INFO
+    category: anomaly
+    service: storage-service
+    message: "User {username} performed upload on {resource} status=200 latency={latency}ms size=9000kb"
+
+  - name: suspicious_status_pattern
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed {action} on {resource} status=403 latency={latency}ms"
+
+  - name: error_burst
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} performed {action} on {resource} status=500 latency=600ms"

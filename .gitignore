@@ -1,0 +1,6 @@
+.venv
+.ipynb_checkpoints
+**/.ipynb_checkpoints
+**/*/.ipynb_checkpoints
+**/webapp/__pycache__
+:

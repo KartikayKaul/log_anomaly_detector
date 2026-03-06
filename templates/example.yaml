@@ -1,0 +1,72 @@
+# --------------------- #
+# This is an example
+# config file
+# --------------------- #
+version: 1
+
+# -----------------------------------
+# Global Generation Constants
+#   given fields are mandatory
+# -----------------------------------
+
+generation:
+  start_time: "time in ISO format"
+  end_time: "2026-01-07T23:59:59Z"
+  total_logs: 500
+  normal_weight: 0.95 # weight of non-anomalous logs
+  user_count: 20 # number of users involved
+
+# -----------------------------------
+# Global Field Generators
+# 
+# -----------------------------------
+fields:
+  username:
+    type: faker
+    provider: user_name
+  
+  role:
+    type: str
+    values:
+      - admin
+      - user
+      - moderator
+
+  ### can add as many fields as you want.
+
+
+# -----------------------------------
+# Log Formatting Configuration
+# Engine will use this to build each line
+# -----------------------------------
+log_format:
+  timestamp_format: "%Y-%m-%dT%H:%M:%SZ" # recommended format
+  structure: "{timestamp} [{level}] userid={username} {message}"
+
+# -----------------------------------
+# Templates
+# -----------------------------------
+templates:
+  # ------ NORMAL EVENTS
+  - name: event_name1
+    level: INFO
+    category: normal
+    service: service_name1
+    message: "User {username} started event_name1"
+
+  - name: event_name2
+    level: WARNING
+    category: normal
+    service: auth-service
+    message: "USer {username} logged out"
+
+  
+  # -------- RARE EVENTS / ANOMALIES
+  # IMPORTANT: These DO NOT explicitly say “attack”
+  # They look like legitimate but rare events
+
+  - name: anna_malai_1
+    level: WARNING
+    category: anomaly
+    service: service_name2
+    message: "User {username} erased my existence"

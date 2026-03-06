@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>Testing — Log Anomaly Detector</title>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-title">Log Anomaly Detection System</span>
+    </div>
+    <div class="nav-links">
+      <a href="{% url 'home' %}" class="nav-link">Dashboard</a>
+      <a href="{% url 'testing' %}" class="nav-link active">Testing</a>
+       <a href="{% url 'config' %}" class="nav-link">Data config</a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="page-content">
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      <div class="top-container">
+
+        <!-- LEFT: Manual Detection -->
+        <div class="box">
+          <h3>Manual Log Detection</h3>
+          {{ form.log_line }}
+          <button type="submit" name="action" value="single_detect">
+            Detect Log
+          </button>
+        </div>
+
+        <!-- RIGHT: File Upload -->
+        <div class="box">
+          <h3>Upload File</h3>
+          <div class="upload-card" onclick="document.getElementById('fileInput').click();">
+            <p class="main-text">Select File Here</p>
+            <p class="sub-text">Files Supported: TXT, LOG</p>
+            <span class="upload-btn">Choose File</span>
+          </div>
+          <input
+            type="file"
+            name="log_file"
+            id="fileInput"
+            accept=".txt,.log"
+            style="display: none;"
+            onchange="document.getElementById('file-name-display').textContent = this.files[0]?.name || '';"
+          >
+          <p id="file-name-display"></p>
+          <button type="submit" name="action" value="file_detect">
+            Detect File
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+    <!-- Result -->
+    {% if result %}
+    <div class="result-box {% if result == 'anomaly' %}result-anomaly{% else %}result-normal{% endif %}">
+      <span class="result-icon">{% if result == 'anomaly' %}⚠{% else %}✔{% endif %}</span>
+      <span><strong>Result:</strong> {{ result|capfirst }}</span>
+    </div>
+    {% endif %}
+
+    <!-- Detection History -->
+    <div class="history-section">
+      <h3>Detection History</h3>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Log Line</th>
+              <th>Prediction</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if logs %}
+              {% for log in logs %}
+                <tr class="{% if log.prediction == 'anomaly' %}anomaly{% else %}normal{% endif %}">
+                  <td>{{ log.log_line }}</td>
+                  <td>{{ log.prediction|capfirst }}</td>
+                  <td>{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="3" class="no-logs">No detection history yet.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+</body>
+</html>
