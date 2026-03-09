@@ -28,3 +28,8 @@
 - For detection you call `cli.detect` module. 
     example, ``python -m cli.detect logreg --model-path "assets/model_saves/logreg.joblib" --log-line "2026-02-01Z12:15:32.2345T [INFO] ...."`
     
+
+
+#Contributer
+- Kartikay kaul
+- Harsh Padiyar
