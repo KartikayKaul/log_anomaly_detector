@@ -85,7 +85,7 @@ def test_model(args):
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("mode", choices=["train", "test"])
+    parser.add_argument("mode", choices=["train", "test"], help="Pick your mode to either train or test")
     parser.add_argument("--model", required=True, choices=["logreg", "isolation"])
     parser.add_argument("--data")
     parser.add_argument("--model-path", default="assets/model_saves")
