@@ -30,6 +30,6 @@
     example, ``python -m cli.detect logreg --model-path "assets/model_saves/logreg.joblib" --log-line "2026-02-01Z12:15:32.2345T [INFO] ...."`
     
 
-# Contributer
-- Kartikay kaul
-- Harsh Padiyar
+# Contributors
+- [Kartikay kaul](https://github.com/KartikayKaul)
+- [Harsh Padiyar](https://github.com/H4rryC0d3)
