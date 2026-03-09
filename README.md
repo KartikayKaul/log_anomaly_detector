@@ -3,6 +3,7 @@
 
 ## Installation Guide
 - Create a python virtual environment in the root folder, `python -m venv <foldername>`
+- Activate the environment, `source ./<foldername>/bin/activate`
 - Install requirements `pip install -r requirements.txt`
 - Install project's modules (core, cli), `pip install -e .`
 - You have installed the core and cli modules successfully. Now you can start your work.
@@ -29,7 +30,6 @@
     example, ``python -m cli.detect logreg --model-path "assets/model_saves/logreg.joblib" --log-line "2026-02-01Z12:15:32.2345T [INFO] ...."`
     
 
-
-#Contributer
+# Contributer
 - Kartikay kaul
 - Harsh Padiyar
