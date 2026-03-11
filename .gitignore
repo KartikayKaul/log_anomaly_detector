@@ -7,3 +7,5 @@
 **/core/__pycache__/
 log_anomaly_engine.egg-info
 *.ipynb
+**/webapp/detector/__pycache__/
+webapp/**/*/__pycache__/
