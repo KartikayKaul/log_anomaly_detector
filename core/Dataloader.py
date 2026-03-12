@@ -9,7 +9,15 @@ def dataloader(n: int,
                normal_prob: float=0.9
                ):
     """
-        Data generator that 
+        a generator | lazily generates value from a list of template log values
+
+        PARAMETERS
+            n: number of values that will be generated
+            templates_list: a list of all the log templates that were generated from generate_data
+            normal_prob: probability with which normal logs will be produced
+        
+        RETURNS
+            a generator object
     """
 
     normal_templates =[t for t in templates_list if t['category'] == 'normal']

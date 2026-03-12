@@ -13,7 +13,7 @@ def load_config(file_name: str="config.yaml", path: Path=".") -> dict:
     """
     
     assert isinstance(file_name, str), "`file_name` has to be a str object"
-    assert isinstance(path, (Path, str)), "`path` has to be etiher str or Path object"
+    assert isinstance(path, (Path, str)), "`path` has to be either str or Path object"
 
     file_path = Path(path) / file_name
 

@@ -4,7 +4,8 @@ from pathlib import Path
 
 def main():
     """
-        u r stoopid. hehe :3
+        hello :3
+        we generate data using this. that is all
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="templates/config.yaml", help="Path to the config file. Can be either absolute or relative path")

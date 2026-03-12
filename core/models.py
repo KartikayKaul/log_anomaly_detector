@@ -13,7 +13,8 @@ from sklearn.metrics import roc_curve, roc_auc_score, confusion_matrix, classifi
 
 class TfIdfIsolationModel:
     """
-    
+        IsolationForest Model with TFIDF vectorizer for representing the text of inputs in logs
+
     """
     def __init__(
             self,
@@ -117,6 +118,10 @@ class TfIdfIsolationModel:
 
 
 class TfIdfLogRegModel:
+    """
+        Logistic Regression model for classifying normal vs anomalous logs
+        TFIDF vectorizer used to represent log text into numerical format
+    """
     def __init__(
             self,
             max_features=10000,

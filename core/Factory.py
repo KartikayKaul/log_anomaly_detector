@@ -17,7 +17,15 @@ def timestomper(n: int,
                 fmt: str="%Y-%m-%dT%H:%M:%SZ"
             ):
     """
-        
+        a generator function that yields timestamps between [start, end] range
+        PARAMETERS:
+            n: number of timestamps to be generated
+            start: datetime string in ISO format or custom format,
+            end: datetime string in ISO format or custom format
+            fmt: format of the start and end datetime inputs
+
+        RETURNS
+            a generator object that can generated `n` values at max
     """
 
     start = datetime.strptime(start, fmt)
@@ -60,7 +68,7 @@ def generateLogFileFromJSON(json_file_path: str, log_file_path: str='.'):
 # a wittle abstraction hurt nobody
 class FieldGenerator:
     """
-
+        Blueprint of the FieldGenerator subclasses
     """
 
     def __init__(self, config):
@@ -71,7 +79,11 @@ class FieldGenerator:
     
 
 class FakerField(FieldGenerator):
-    def __init__(self, config, faker_instance):
+    """
+        This will select Faker value provider using the faker_instance value
+
+    """
+    def __init__(self, config: dict[dict], faker_instance: str):
         super().__init__(config)
         self.faker = faker_instance
 
@@ -80,16 +92,29 @@ class FakerField(FieldGenerator):
         return getattr(self.faker, provider)()
 
 class StringField(FieldGenerator):
+    """
+        Generates values randomly for `str` field types
+        Values are provided by user in YAML file
+    """
     def generate(self):
         values = self.config['values']
         return random.choice(values)
     
 class IntCField(FieldGenerator):
+    """
+        generates values randomly for `int categorical` field types
+        values are provided by user in YAML file
+    """
     def generate(self):
         values = self.config['values']
         return random.choice(values)
     
 class IntDField(FieldGenerator):
+    """
+        generates values from the given distribution (uniform/normal)
+        with mean and standard deviation provided or min-max values
+        depending on the distribution
+    """
     def generate(self):
         distribution = self.config.get("distribution", "uniform")
         if distribution == "normal":
@@ -107,6 +132,10 @@ class IntDField(FieldGenerator):
             raise NotImplementedError
         
 class FloatField(FieldGenerator):
+    """
+        generates float values from a given distribution
+        based on either mean-std or min-max values
+    """
     def generate(self):
         distribution = self.config.get("distribution", "uniform")
 
@@ -137,7 +166,6 @@ class LogFieldEngine:
         data using their corresponding generators
     
     """
-
     def __init__(self, field_configs: dict):
         self.faker = Faker()
         self.generators = {}

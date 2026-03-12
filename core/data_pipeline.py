@@ -6,6 +6,17 @@ import jsonlines
 from string import Formatter
 
 def generate_data(config_path: str, json_out: str, log_out: str):
+    """
+        data generation pipeline function. It generates JSON train/test data file
+        as well as raw log file
+
+        PARAMETERS
+            config_path: path to YAML configuration file
+            json_out: path where JSON output will be saved
+            log_out: path where raw log output will be saved
+        RETURNS
+            None
+    """
 
     config = load_config(config_path)
     start_time, end_time, n_logs, normal_prob = config['generation'].values()

@@ -1,9 +1,16 @@
 import argparse
 from pathlib import Path
+from typing import Union
 
 from core.models import TfIdfIsolationModel, TfIdfLogRegModel
 
-def load_model(model_type, model_path):
+def load_model(model_type: str, model_path: str) -> Union[TfIdfIsolationModel, TfIdfLogRegModel]:
+    """
+        loads appropriate model based on the the input params
+        PARAMETERS
+            model_type: type of model options- {logreg, isolation}
+            model_path: path to the serialized model using joblib
+    """
     if model_type == "logreg":
         model = TfIdfLogRegModel()
     elif model_type == "isolation":
@@ -14,7 +21,17 @@ def load_model(model_type, model_path):
     model.load(model_path)
     return model
 
-def detect_logs(model, model_type, logs):
+def detect_logs(model: Union[TfIdfLogRegModel, TfIdfIsolationModel], model_type: str, logs: list[str]) -> list[dict]:
+    """
+        performs detection on the log values `logs` and returns the result list
+
+        PARAMETERS
+            model: model object 
+            model_type: str name of the type of model {logreg, isolation}
+            logs: list of logs
+        RETURNS
+            results: list of dictionary with log message, model score, prediction {0,1} and categorical label
+    """
     results = []
 
     if model_type == "logreg":

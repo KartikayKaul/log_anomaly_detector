@@ -7,7 +7,10 @@ from core.models import TfIdfIsolationModel, TfIdfLogRegModel
 
 DEFAULT_SAVE_DIR = Path("assets/model_saves")
 
-def load_data(path: Path):
+def load_data(path: Path) -> tuple[list]:
+    """
+        returns a tuple of logs and its corresponding labels
+    """
     logs = []
     labels = []
     with jsonlines.open(path) as reader:
@@ -18,6 +21,9 @@ def load_data(path: Path):
     return logs, labels
 
 def train_model(args):
+    """
+        train your model based on the arguments provided in CLI
+    """
     logs, labels = load_data(args.data)
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -60,6 +66,9 @@ def train_model(args):
 
 
 def test_model(args):
+    """
+        test your saved model based on the CLI arguments
+    """
     logs, labels = load_data(args.data)
 
     if not args.model_path:
@@ -83,6 +92,9 @@ def test_model(args):
         raise ValueError("Unknown model")
 
 def main():
+    """
+        bossman function right here :3
+    """
     parser = argparse.ArgumentParser()
 
     parser.add_argument("mode", choices=["train", "test"], help="train or test mode")
