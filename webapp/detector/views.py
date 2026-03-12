@@ -248,3 +248,11 @@ def download_generated_file(request, file_type):
     )
 
 
+
+#-------------------wipe logs--------------------#
+
+def wipe_logs(request):
+    if request.method == "POST":
+        LogEntry.objects.all().delete()
+        messages.success(request, "All logs deleted successfully!")
+    return redirect("home")

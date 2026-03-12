@@ -736,6 +736,30 @@ tbody tr:hover td { background: #f8fafc; }
   flex: 1;
 }
 
+
+/* ──────────────────────────────
+   wipe logs css
+─────────────────────────────── */
+
+.action-bar{
+  margin:20px 20px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.btn-wipe{
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:10px -25px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn-wipe:hover{
+  background:#dc2626;
+}
 /* ───────────────────────────────
    RESPONSIVE
 ─────────────────────────────── */
@@ -808,9 +832,17 @@ tbody tr:hover td { background: #f8fafc; }
     </div>
   </nav>
 
+
+
 <div class="page-content">
   <h2>System Overview</h2>
   <p class="page-subtitle">Real-time log monitoring and anomaly detection</p>
+  <div class="action-bar">
+  <form method="POST" action="{% url 'wipe_logs' %}" onsubmit="return confirm('Are you sure you want to delete all logs?');">
+    {% csrf_token %}
+    <button type="submit" class="btn-wipe">Wipe Logs</button>
+  </form>
+</div>
 
   <!-- STATS CARDS -->
   <div class="stats-container">

@@ -7,10 +7,8 @@ urlpatterns = [
     path('', views.dashboard, name='home'),
     path('testing/', views.testing, name='testing'),
     path('config/', views.config_page, name='config'),
+    path('wipe-logs/', views.wipe_logs, name='wipe_logs'),
 
-#     path("generate-logs/", views.generate_logs, name="generate_logs"),
-# path("save-config/", views.save_config, name="save_config"),
-# path("download-config/", views.download_config, name="download_config"),
 
     # APIs
     path('api/detect/', api.detect_log_api, name='detect_log_api'),
