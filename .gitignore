@@ -10,7 +10,11 @@ slow.ipynb
 **/webapp/detector/__pycache__/
 webapp/**/*/__pycache__/
 webapp/db.sqlite3
-assets/data/
-assets/logs/
-assets/model_saves/
-assets/temp/
+assets/data/*
+assets/logs/*
+assets/model_saves/*
+assets/temp/*
+!assets/temp/.gitkeep
+!assets/model_saves/.gitkeep
+!assets/data/.gitkeep
+!assets/logs/.gitkeep
