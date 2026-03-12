@@ -6,7 +6,7 @@
 **/cli/__pycache__
 **/core/__pycache__/
 log_anomaly_engine.egg-info
-*.ipynb
+slow.ipynb
 **/webapp/detector/__pycache__/
 webapp/**/*/__pycache__/
 webapp/db.sqlite3
