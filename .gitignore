@@ -9,3 +9,4 @@ log_anomaly_engine.egg-info
 *.ipynb
 **/webapp/detector/__pycache__/
 webapp/**/*/__pycache__/
+webapp/db.sqlite3
