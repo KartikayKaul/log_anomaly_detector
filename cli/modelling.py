@@ -26,6 +26,15 @@ def train_model(args):
     """
     logs, labels = load_data(args.data)
 
+    if args.verbose:
+        print("\n==============================")
+        print("Dataset Information")
+        print("==============================")
+        print(f"Total logs: {len(logs)}")
+        print(f"Anomalies: {sum(labels)}")
+        print(f"Normal: {len(labels) - sum(labels)}")
+        print("==============================\n")
+
     X_train, X_test, y_train, y_test = train_test_split(
         logs,
         labels,
@@ -34,12 +43,39 @@ def train_model(args):
         random_state=args.random_state
     )
 
+    if args.verbose:
+        print("Train/Test Split")
+        print(f"Train size: {len(X_train)}")
+        print(f"Test size : {len(X_test)}\n")
+
     if args.model == "logreg":
-        model = TfIdfLogRegModel()
+        model = TfIdfLogRegModel(verbose=args.verbose==True)
         model.train(X_train, y_train)
         if args.tune_threshold:
             model.tune_threshold(X_test, y_test)
+        
+        if args.threshold_grid and not args.tune_threshold:
+           
+            if args.verbose:
+                print("\nThreshold tuning...")
 
+            best_score = -float("inf")
+            best_threshold = None
+
+            for t in args.threshold_grid:
+                model.threshold = t
+                result = model.evaluate(X_test, y_test, verbose=False)
+                score = result['f1']
+
+                if args.verbose:
+                    print(f"Threshold {t} --> F1: {score}")
+
+                if score > best_score:
+                    best_score = score
+                    best_threshold = t
+            
+            model.threshold = best_threshold
+            print(f"\nBest threshold: {best_threshold}")
         model.evaluate(X_test, y_test, args.verbose==True)
 
     elif args.model == "isolation":
@@ -60,7 +96,6 @@ def train_model(args):
     save_path = Path(args.model_path) if args.model_path else DEFAULT_SAVE_DIR
     save_path = save_path / (f"{args.model_save_name}.joblib" if args.model_save_name else f"{args.model}.joblib")
     
-    print(save_path)
     model.save(save_path)
     print(f"\nModel saved at: {save_path}")
 
@@ -107,8 +142,9 @@ def main():
     parser.add_argument("--random-state", type=int, default=None, help="set value to be able to repeat your experiments.")
     parser.add_argument("--tune-threshold", action="store_true", help="Used with logreg. The ML model will adjust the threshold value itself based on given data.")
     parser.add_argument("--threshold", type=float, help="manual threshold value for logistic regression model.")
+    parser.add_argument("--threshold-grid", nargs="+", type=float, help="Try out multiple threshold forl ogistic regression model training.")
     parser.add_argument("--verbose", type=float, help="print results from test mode. classification report and confusion matrix")
-    
+
     args = parser.parse_args()
 
     if args.mode == "train":

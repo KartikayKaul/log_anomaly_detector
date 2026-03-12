@@ -8,7 +8,7 @@ import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import IsolationForest
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_curve, roc_auc_score, confusion_matrix, classification_report
+from sklearn.metrics import f1_score, roc_curve, roc_auc_score, confusion_matrix, classification_report
 
 
 class TfIdfIsolationModel:
@@ -124,12 +124,14 @@ class TfIdfLogRegModel:
     """
     def __init__(
             self,
-            max_features=10000,
+            max_features=5000,
             ngram_range=(1, 2),
             min_df=2,
             C=1.0,
             class_weight="balanced",
-            random_state=None
+            random_state=None,
+            max_iter=1000,
+            verbose=False
     ):
 
         self.vectorizer = TfidfVectorizer(
@@ -142,9 +144,10 @@ class TfIdfLogRegModel:
         self.model = LogisticRegression(
             C=C,
             class_weight=class_weight,
-            max_iter=1000,
+            max_iter=max_iter,
             random_state=random_state,
-            solver="liblinear"
+            solver="liblinear",
+            verbose=verbose
         )
 
         self.threshold = 0.5
@@ -184,6 +187,7 @@ class TfIdfLogRegModel:
         preds = (probs >= self.threshold).astype(int)
 
         roc_auc = roc_auc_score(labels, probs)
+        f1 = f1_score(labels, preds)
         conf_matrix = confusion_matrix(labels, preds)
         class_report = classification_report(labels, preds)
 
@@ -199,6 +203,7 @@ class TfIdfLogRegModel:
 
         return {
             "roc_auc": roc_auc,
+            "f1": f1,
             "confusion_matrix": conf_matrix,
             "classification_report": class_report
         }
