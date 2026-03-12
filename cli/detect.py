@@ -47,11 +47,11 @@ def detect_logs(model, model_type, logs):
 def main():
     parser = argparse.ArgumentParser(description="Detect anomalies in logs")
 
-    parser.add_argument("--model", required=True, choices=["logreg", "isolation"])
-    parser.add_argument("--model-path", required=True)
-    parser.add_argument("--input-file")
-    parser.add_argument("--log-line")
-    parser.add_argument("--output-file")
+    parser.add_argument("--model", required=True, choices=["logreg", "isolation"], help="Pick your choice of ML model to detect with.")
+    parser.add_argument("--model-path", required=True, help="path to where persistent model parameters")
+    parser.add_argument("--input-file" help="path to the log file")
+    parser.add_argument("--log-line", help="single line log input")
+    parser.add_argument("--output-file", help="path to where results will be posted")
 
     args = parser.parse_args()
 
