@@ -1,373 +1,297 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Config</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<style>
-/* ───────────────────────────────
-   RESET & BASE
-─────────────────────────────── */
+  <style>
+    /** reset **/
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/** base **/
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f0f2f5;
-  color: #1a1a2e;
-  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f3f4f6;
+  color: #1e293b;
 }
 
-/* ───────────────────────────────
-   NAVBAR
-─────────────────────────────── */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
-  padding: 0 32px;
-  height: 62px;
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.nav-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.nav-link {
-  color: rgba(255, 255, 255, 0.75);
-  text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 500;
-  padding: 7px 14px;
-  border-radius: 7px;
-  transition: background 0.15s, color 0.15s;
-  white-space: nowrap;
-}
-
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-}
-
-.nav-link.active {
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  font-weight: 600;
-}
-
-/* ───────────────────────────────
-   PAGE CONTENT
-─────────────────────────────── */
+/** page layout **/
 .page-content {
-  padding: 32px 16px 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
 }
 
-.page-content > * {
-  width: 100%;
-  max-width: 640px;
-}
-
-/* ───────────────────────────────
-   HEADINGS
-─────────────────────────────── */
-h2 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1a1a2e;
-  margin-bottom: 20px;
-}
-
-h3 {
-  font-size: 11px;
-  font-weight: 700;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  margin-bottom: 16px;
-}
-
-/* ───────────────────────────────
-   UPLOAD BOX
-─────────────────────────────── */
+/** upload box **/
 .box {
-  background: #fff;
-  padding: 28px;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  position: relative;
-  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid #94a3b8;
+  border-radius: 12px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+.box h2 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 1.25rem;
 }
 
-.box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-}
-
-/* ───────────────────────────────
-   UPLOAD CARD
-─────────────────────────────── */
+/** upload card **/
 .upload-card {
-  border: 1.5px dashed #d1d5db;
+  border: 2px dashed #94a3b8;
   border-radius: 10px;
-  padding: 40px 20px;
+  padding: 2.25rem 1rem;
   text-align: center;
   cursor: pointer;
-  margin-bottom: 12px;
-  background: #fafafa;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border 0.15s, background 0.15s;
+  margin-bottom: 0.75rem;
 }
+.upload-card:hover,
+.upload-card.file-selected { border-color: #3b82f6; background: #dbeafe; }
 
-.upload-card:hover {
-  border-color: #3b82f6;
-  background: #eff6ff;
-}
-
-.main-text {
-  font-size: 15px;
-  font-weight: 500;
-  margin-bottom: 6px;
-  color: #374151;
-}
-
-.sub-text {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-bottom: 18px;
-}
+.main-text { font-size: 14px; font-weight: 500; color: #334155; margin-bottom: 4px; }
+.sub-text  { font-size: 12px; color: #64748b; margin-bottom: 14px; }
 
 .upload-btn {
-  background: #3b82f6;
-  color: #fff;
-  padding: 7px 18px;
-  border-radius: 7px;
-  font-size: 13px;
-  font-weight: 500;
-  display: inline-block;
+  background: #e2e8f0;
+  border: 1px solid #94a3b8;
+  color: #334155;
+  font-size: 12px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
+/** file name display **/
 #file-name {
   font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 12px;
-  min-height: 18px;
+  color: #1d4ed8;
+  font-weight: 500;
+  min-height: 20px;
+  margin-bottom: 0.75rem;
+  word-break: break-all;
 }
 
-/* ───────────────────────────────
-   SUBMIT BUTTON
-─────────────────────────────── */
+/** submit button **/
 .btn-submit {
-  display: block;
-  width: 100%;
-  margin-top: 8px;
-  padding: 11px 20px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: #fff;
+  display: inline-block;
+  background: #1e293b;
+  color: #f1f5f9;
   border: none;
+  padding: 10px 22px;
   border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
-  transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
-  text-align: center;
   text-decoration: none;
+  transition: background 0.15s;
+  white-space: nowrap;
 }
+.btn-submit:hover { background: #334155; }
 
-.btn-submit:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.45);
-}
-
-.btn-submit:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
-}
-
-/* ───────────────────────────────
-   RESULT BOX
-─────────────────────────────── */
+/** result box **/
 .result-box {
-  margin-top: 28px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 24px 28px;
-  position: relative;
-  overflow: hidden;
-}
-
-.result-box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #22c55e, #86efac);
-}
-
-.result-box pre {
   background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #94a3b8;
+  border-radius: 12px;
+  padding: 1.75rem;
+  margin-bottom: 1rem;
+}
+.result-box h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+.result-box pre {
+  background: #e8edf5;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  padding: 16px;
-  font-family: 'Courier New', monospace;
-  font-size: 12.5px;
-  color: #1a1a2e;
-  line-height: 1.6;
+  padding: 1rem;
+  font-size: 12px;
+  color: #1e293b;
   overflow-x: auto;
+  line-height: 1.6;
   white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 400px;
-  overflow-y: auto;
+  word-break: break-all;
 }
 
-.result-box pre::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-.result-box pre::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-.result-box pre::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* ───────────────────────────────
-   DOWNLOAD BUTTONS ROW
-─────────────────────────────── */
+/** download row **/
 .download-row {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
 }
 
-.download-row .btn-submit {
-  width: auto;
-  flex: 1;
+
+/** =====================================================
+    RESPONSIVE BREAKPOINTS
+    ===================================================== **/
+
+/** large tablets (≤ 1024px) **/
+@media (max-width: 1024px) {
+  .page-content { padding: 2rem 1.5rem; }
 }
 
-/* ───────────────────────────────
-   RESPONSIVE
-─────────────────────────────── */
+/** tablets (≤ 768px) **/
 @media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    height: auto;
-    padding: 14px 16px;
-    gap: 10px;
-    align-items: flex-start;
-  }
+  .page-content { padding: 1.5rem 1.25rem; }
 
-  .nav-links {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .box { padding: 1.5rem; }
 
-  .page-content {
-    padding: 20px 16px 40px;
-    max-width: 100%;
-  }
-
-  .download-row {
-    flex-direction: column;
-  }
+  .upload-card { padding: 2rem 1rem; }
 }
-</style>
+
+/** mobile (≤ 480px) **/
+@media (max-width: 480px) {
+  .page-content { padding: 1.25rem 1rem; }
+
+  .box {
+    padding: 1.25rem 1rem;
+    border-radius: 10px;
+  }
+  .box h2 { font-size: 15px; }
+
+  .upload-card { padding: 1.75rem 1rem; }
+  .main-text   { font-size: 13px; }
+
+  /** full-width buttons on mobile **/
+  .btn-submit  { width: 100%; text-align: center; }
+
+  .download-row { flex-direction: column; }
+  .download-row .btn-submit { width: 100%; text-align: center; }
+
+  .result-box { padding: 1.25rem 1rem; border-radius: 10px; }
+  .result-box h3  { font-size: 14px; }
+  .result-box pre { font-size: 11px; }
+}
+
+/** extra-small phones (≤ 360px) **/
+@media (max-width: 360px) {
+  .page-content { padding: 1rem 0.75rem; }
+  .box { padding: 1rem; }
+}
+  </style>
+</head>
+
 <body>
 
+ 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-brand">
-    <span class="nav-title">Log Anomaly Detection System</span>
+    <a href="{% url 'home' %}" class="nav-title">Log Anomaly Detection System</a>
   </div>
+ 
+  <!-- Desktop links -->
   <div class="nav-links">
-    <a href="{% url 'home' %}" class="nav-link">Dashboard</a>
+    <a href="{% url 'home' %}"    class="nav-link">Dashboard</a>
     <a href="{% url 'testing' %}" class="nav-link">Testing</a>
-    <a href="{% url 'config' %}" class="nav-link active">Data Config</a>
+    <a href="{% url 'config' %}"  class="nav-link active">Data Config</a>
   </div>
+ 
+  <!-- Hamburger (mobile only) -->
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
-
+ 
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="{% url 'home' %}"    class="nav-link">Dashboard</a>
+  <a href="{% url 'testing' %}" class="nav-link">Testing</a>
+  <a href="{% url 'config' %}"  class="nav-link active">Data Config</a>
+</div>
+ 
+<!-- PAGE CONTENT -->
 <div class="page-content">
-
+ 
   <!-- Upload Config File -->
   <div class="box">
     <h2>Upload Config File</h2>
     <form method="POST" enctype="multipart/form-data" action="{% url 'config' %}">
       {% csrf_token %}
       <input type="hidden" name="action" value="upload_config_file">
-
-      <div class="upload-card" onclick="document.getElementById('configFile').click();">
+ 
+      <div class="upload-card" id="uploadCard"
+           onclick="document.getElementById('configFile').click();">
         <p class="main-text">Select Config File</p>
         <p class="sub-text">Supported: YAML, JSON</p>
         <span class="upload-btn">Choose File</span>
       </div>
-
+ 
       <input
         type="file"
         id="configFile"
         name="config_file"
         accept=".yaml,.yml,.json"
         style="display: none;"
-        onchange="document.getElementById('file-name').innerText = this.files[0]?.name || '';"
       >
       <p id="file-name"></p>
-
+ 
       <button type="submit" class="btn-submit">Upload Config</button>
-
     </form>
   </div>
-
+ 
   <!-- Result Section -->
   {% if result_data %}
-  <div class="result-box">
+  <div class="result-box" id="resultBox">
     <h3>Generated Result</h3>
     <pre>{{ result_data }}</pre>
   </div>
   <div class="download-row">
     <a href="/download/json/" class="btn-submit">Download JSONL</a>
-    <a href="/download/log/" class="btn-submit">Download LOG</a>
+    <a href="/download/log/"  class="btn-submit">Download LOG</a>
   </div>
-  <script>
-    document.querySelector('.result-box').scrollIntoView({ behavior: 'smooth' });
-  </script>
   {% endif %}
-
-</div>
-
+ 
+</div><!-- /page-content -->
+ 
+<script>
+  /** hamburger toggle **/
+  const toggle = document.getElementById('navToggle');
+  const drawer = document.getElementById('navDrawer');
+ 
+  toggle.addEventListener('click', function () {
+    const isOpen = drawer.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', isOpen);
+  });
+ 
+  drawer.querySelectorAll('.nav-link').forEach(function (link) {
+    link.addEventListener('click', function () {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+ 
+  /** file input feedback **/
+  const configFile  = document.getElementById('configFile');
+  const fileDisplay = document.getElementById('file-name');
+  const uploadCard  = document.getElementById('uploadCard');
+ 
+  configFile.addEventListener('change', function () {
+    const name = this.files[0]?.name || '';
+    fileDisplay.textContent = name;
+    uploadCard.classList.toggle('file-selected', !!name);
+  });
+ 
+  /** smooth scroll to result **/
+  const resultBox = document.getElementById('resultBox');
+  if (resultBox) {
+    resultBox.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+ 
 </body>
 </html>
+ 

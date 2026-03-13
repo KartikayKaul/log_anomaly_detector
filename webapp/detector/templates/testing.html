@@ -6,102 +6,434 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <title>Testing — Log Anomaly Detector</title>
+  <style>
+    
+
+/* ── LAYOUT ──────────────────────────────────────────────────────── */
+.page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+/* ── TOP TWO-COLUMN GRID ─────────────────────────────────────────── */
+.top-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+/* ── BOX ─────────────────────────────────────────────────────────── */
+.box {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.box h3 { font-size: 17px; font-weight: 600; color: #0f172a; }
+
+.box textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #0f172a;
+  background: #e8edf3;
+  resize: vertical;
+  min-height: 160px;
+  outline: none;
+  transition: border 0.15s, background 0.15s;
+}
+.box textarea:focus { border-color: #3b82f6; background: #ffffff; }
+
+.box button {
+  align-self: flex-start;
+  background: #1d4ed8;
+  color: #ffffff;
+  border: none;
+  padding: 11px 26px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.box button:hover { background: #1e40af; }
+
+/* ── UPLOAD CARD ─────────────────────────────────────────────────── */
+.upload-card {
+  border: 2px dashed #94a3b8;
+  border-radius: 12px;
+  padding: 2.75rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border 0.15s, background 0.15s;
+}
+.upload-card:hover,
+.upload-card.file-selected { border-color: #3b82f6; background: #dbeafe; }
+
+.main-text { font-size: 15px; font-weight: 500; color: #1e293b; margin-bottom: 6px; }
+.sub-text  { font-size: 13px; color: #64748b; margin-bottom: 16px; }
+
+.upload-btn {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 13px;
+  padding: 8px 20px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+/* ── FILE ROW ────────────────────────────────────────────────────── */
+.file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+  flex-wrap: wrap;        /* wraps on very narrow boxes */
+}
+#file-name-display {
+  font-size: 13px;
+  color: #1d4ed8;
+  font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;           /* allows ellipsis to work inside flex */
+}
+.file-row button { align-self: auto; flex-shrink: 0; }
+
+/* ── RESULT BOX ──────────────────────────────────────────────────── */
+.result-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+.result-normal  { background: #dcfce7; border: 1px solid #86efac; color: #14532d; }
+.result-anomaly { background: #fee2e2; border: 1px solid #fca5a5; color: #7f1d1d; }
+.result-icon    { font-size: 18px; flex-shrink: 0; }
+
+/* ── HISTORY SECTION ─────────────────────────────────────────────── */
+.history-section {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 2rem;
+  width: 100%;
+}
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.history-header h3 { font-size: 17px; font-weight: 600; color: #0f172a; }
+
+.log-counter {
+  font-size: 13px;
+  color: #64748b;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  padding: 5px 14px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.log-counter strong { color: #1d4ed8; font-weight: 600; }
+
+/* ── TABLE ───────────────────────────────────────────────────────── */
+.table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll::-webkit-scrollbar        { width: 6px; height: 6px; }
+.table-scroll::-webkit-scrollbar-track  { background: #f1f5f9; border-radius: 99px; }
+.table-scroll::-webkit-scrollbar-thumb  { background: #cbd5e1; border-radius: 99px; }
+.table-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 520px;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  text-align: left;
+  padding: 11px 16px;
+  font-weight: 500;
+  font-size: 12px;
+  color: #475569;
+  border-bottom: 1px solid #cbd5e1;
+  background: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+tbody td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td      { background: #e8edf3; }
+
+tbody tr.anomaly td                  { background: #fef2f2; }
+tbody tr.anomaly td:nth-child(3)     { color: #b91c1c; font-weight: 600; }
+tbody tr.normal  td:nth-child(3)     { color: #15803d; font-weight: 600; }
+
+.row-num {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  width: 52px;
+  text-align: center;
+}
+.td-time  { white-space: nowrap; }
+.no-logs  { text-align: center; color: #94a3b8; padding: 2.5rem; font-size: 14px; }
+
+
+/* ================================================================
+   RESPONSIVE BREAKPOINTS
+   ================================================================ */
+
+/* ── Large tablets (≤ 1024px) ───────────────────────────────────── */
+@media (max-width: 1024px) {
+  .page-content { padding: 2rem 1.5rem; }
+}
+
+/* ── Tablets (≤ 768px) ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page-content { padding: 1.5rem 1.25rem; }
+
+  /* Stack the two boxes vertically */
+  .top-container {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .box { padding: 1.5rem; }
+
+  .upload-card { padding: 2rem 1rem; }
+
+  .history-section { padding: 1.5rem 1.25rem; }
+}
+
+/* ── Mobile (≤ 480px) ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .page-content { padding: 1.25rem 1rem; }
+
+  .box {
+    padding: 1.25rem 1rem;
+    gap: 1rem;
+    border-radius: 12px;
+  }
+  .box h3      { font-size: 15px; }
+  .box button  { width: 100%; text-align: center; align-self: stretch; }
+
+  .box textarea { min-height: 130px; font-size: 13px; }
+
+  .upload-card { padding: 1.75rem 1rem; }
+  .main-text   { font-size: 14px; }
+
+  /* File row: stack filename above button */
+  .file-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  #file-name-display { white-space: normal; }
+  .file-row button   { width: 100%; text-align: center; }
+
+  .result-box { font-size: 14px; padding: 14px 16px; }
+
+  .history-section { padding: 1.25rem 1rem; border-radius: 12px; }
+  .history-header h3 { font-size: 15px; }
+
+  table     { font-size: 13px; }
+  thead th  { padding: 9px 12px; font-size: 11px; }
+  tbody td  { padding: 11px 12px; }
+}
+
+/* ── Extra-small phones (≤ 360px) ──────────────────────────────── */
+@media (max-width: 360px) {
+  .log-counter { font-size: 12px; padding: 4px 10px; }
+}
+  </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="nav-brand">
-      <span class="nav-title">Log Anomaly Detection System</span>
-    </div>
-    <div class="nav-links">
-      <a href="{% url 'home' %}" class="nav-link">Dashboard</a>
-      <a href="{% url 'testing' %}" class="nav-link active">Testing</a>
-       <a href="{% url 'config' %}" class="nav-link">Data config</a>
-    </div>
-  </nav>
 
-  <!-- MAIN CONTENT -->
-  <div class="page-content">
-
-    <form method="post" enctype="multipart/form-data" novalidate>
-      {% csrf_token %}
-      <div class="top-container">
-
-        <!-- LEFT: Manual Detection -->
-        <div class="box">
-          <h3>Manual Log Detection</h3>
-          {{ form.log_line }}
-          <button type="submit" name="action" value="single_detect">
-            Detect Log
-          </button>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <a href="{% url 'home' %}" class="nav-title">Log Anomaly Detection System</a>
+  </div>
+ 
+  <!-- Desktop links -->
+  <div class="nav-links">
+    <a href="{% url 'home' %}"    class="nav-link">Dashboard</a>
+    <a href="{% url 'testing' %}" class="nav-link active">Testing</a>
+    <a href="{% url 'config' %}"  class="nav-link">Data config</a>
+  </div>
+ 
+  <!-- Hamburger (mobile only) -->
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+ 
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="{% url 'home' %}"    class="nav-link">Dashboard</a>
+  <a href="{% url 'testing' %}" class="nav-link active">Testing</a>
+  <a href="{% url 'config' %}"  class="nav-link">Data config</a>
+</div>
+ 
+<!-- MAIN CONTENT -->
+<div class="page-content">
+ 
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <div class="top-container">
+ 
+      <!-- LEFT: Manual Detection -->
+      <div class="box">
+        <h3>Manual Log Detection</h3>
+        {{ form.log_line }}
+        <button type="submit" name="action" value="single_detect">
+          Detect Log
+        </button>
+      </div>
+ 
+      <!-- RIGHT: File Upload -->
+      <div class="box">
+        <h3>Upload File</h3>
+        <div class="upload-card" id="uploadCard"
+             onclick="document.getElementById('fileInput').click();">
+          <p class="main-text">Select File Here</p>
+          <p class="sub-text">Files Supported: TXT, LOG</p>
+          <span class="upload-btn">Choose File</span>
         </div>
-
-        <!-- RIGHT: File Upload -->
-        <div class="box">
-          <h3>Upload File</h3>
-          <div class="upload-card" onclick="document.getElementById('fileInput').click();">
-            <p class="main-text">Select File Here</p>
-            <p class="sub-text">Files Supported: TXT, LOG</p>
-            <span class="upload-btn">Choose File</span>
-          </div>
-          <input
-            type="file"
-            name="log_file"
-            id="fileInput"
-            accept=".txt,.log"
-            style="display: none;"
-            onchange="document.getElementById('file-name-display').textContent = this.files[0]?.name || '';"
-          >
+        <input
+          type="file"
+          name="log_file"
+          id="fileInput"
+          accept=".txt,.log"
+          style="display: none;"
+        >
+        <div class="file-row">
           <p id="file-name-display"></p>
           <button type="submit" name="action" value="file_detect">
             Detect File
           </button>
         </div>
-
       </div>
-    </form>
-
-    <!-- Result -->
-    {% if result %}
-    <div class="result-box {% if result == 'anomaly' %}result-anomaly{% else %}result-normal{% endif %}">
-      <span class="result-icon">{% if result == 'anomaly' %}⚠{% else %}✔{% endif %}</span>
-      <span><strong>Result:</strong> {{ result|capfirst }}</span>
+ 
     </div>
-    {% endif %}
-
-    <!-- Detection History -->
-    <div class="history-section">
+  </form>
+ 
+  <!-- Result -->
+  {% if result %}
+  <div class="result-box {% if result == 'anomaly' %}result-anomaly{% else %}result-normal{% endif %}">
+    <span class="result-icon">{% if result == 'anomaly' %}⚠{% else %}✔{% endif %}</span>
+    <span><strong>Result:</strong> {{ result|capfirst }}</span>
+  </div>
+  {% endif %}
+ 
+  <!-- Detection History -->
+  <div class="history-section">
+    <div class="history-header">
       <h3>Detection History</h3>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Log Line</th>
-              <th>Prediction</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% if logs %}
-              {% for log in logs %}
-                <tr class="{% if log.prediction == 'anomaly' %}anomaly{% else %}normal{% endif %}">
-                  <td>{{ log.log_line }}</td>
-                  <td>{{ log.prediction|capfirst }}</td>
-                  <td>{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
-                </tr>
-              {% endfor %}
-            {% else %}
-              <tr>
-                <td colspan="3" class="no-logs">No detection history yet.</td>
-              </tr>
-            {% endif %}
-          </tbody>
-        </table>
-      </div>
+      <span class="log-counter">
+        Total: <strong id="log-count">{{ logs|length }}</strong> logs
+      </span>
     </div>
-
-  </div><!-- /page-content -->
-
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Log Line</th>
+            <th>Prediction</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if logs %}
+            {% for log in logs %}
+            <tr class="{% if log.prediction == 'anomaly' %}anomaly{% else %}normal{% endif %}">
+              <td class="row-num">{{ forloop.revcounter }}</td>
+              <td>{{ log.log_line }}</td>
+              <td>{{ log.prediction|capfirst }}</td>
+              <td class="td-time">{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="4" class="no-logs">No detection history yet.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+</div><!-- /page-content -->
+ 
+<script>
+  /** hamburger toggle **/
+  const toggle = document.getElementById('navToggle');
+  const drawer = document.getElementById('navDrawer');
+ 
+  toggle.addEventListener('click', function () {
+    const isOpen = drawer.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', isOpen);
+  });
+ 
+  drawer.querySelectorAll('.nav-link').forEach(function (link) {
+    link.addEventListener('click', function () {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+ 
+  /** file input feedback **/
+  const fileInput       = document.getElementById('fileInput');
+  const fileNameDisplay = document.getElementById('file-name-display');
+  const uploadCard      = document.getElementById('uploadCard');
+ 
+  fileInput.addEventListener('change', function () {
+    const name = this.files[0]?.name || '';
+    fileNameDisplay.textContent = name;
+    uploadCard.classList.toggle('file-selected', !!name);
+  });
+</script>
+ 
 </body>
 </html>
+ 

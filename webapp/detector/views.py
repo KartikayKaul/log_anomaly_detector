@@ -239,7 +239,7 @@ def download_generated_file(request, file_type):
         return HttpResponse("Invalid file type", status=400)
 
     if not file_path.exists():
-        return HttpResponse("File not found", status=404)
+        return HttpResponse("File not found", status=40e4)
 
     return FileResponse(
         open(file_path, "rb"),
