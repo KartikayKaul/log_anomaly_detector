@@ -1,6 +1,7 @@
 # --------------------- #
 # This is an example
 # config file
+# This will help users understand the format of the configuration file.
 # --------------------- #
 version: 1
 
