@@ -76,8 +76,8 @@ The three CLI package commands are explained below with 1 or 2 usage examples. O
 
    |  argument  |  value type  |  default value |                 description |  optional/required? |
    | --------- | ------------ | ---------------------------- | ------------ |  ------------|
-   |  `mode`   |   choice <details><summary></summary><ul><li>train</li><li>test</li></ul></details>    |      :x: <small> it defaults to test </small>  |   positional argument. pick train or test mode. |  optional |
-   |  `--model` | choice  <details><summary></summary><ul><li>logreg</li><li>isolation</li></ul></details>   | :x: | choices of models to pick from to train or evaluate. currently there are only two options | required |
+   |  `mode`   |    <details><summary>choice</summary><ul><li>train</li><li>test</li></ul></details>    |      :x: <small> it defaults to test </small>  |   positional argument. pick train or test mode. |  optional |
+   |  `--model` |   <details><summary>choice</summary><ul><li>logreg</li><li>isolation</li></ul></details>   | :x: | choices of models to pick from to train or evaluate. currently there are only two options | required |
    | `--data` | string |  :x: | path to the JSONL file for training or testing | reqruired |
    | `--model-path` | string | `'assets/model_saves'` | path to where the model is saved or to be saved | optional |
    | `--model-save-name` | string |  :x: | name of the file that saves model state on disk. If not given, value interpreted from default model save location and name. | optional |
@@ -94,13 +94,13 @@ The three CLI package commands are explained below with 1 or 2 usage examples. O
 
     |  argument  |  value type  |  default value |description |  optional/required? |
    | --------- | ------------ | ---------------------------- | ------------ |  ------------|
-   | `--model` | choice <details><summary></summary><ul><li>logreg</li><li>isolation</li></ul></details> | :x: | pick your choice of ML model to detect anomaly | reqruired |
+   | `--model` |  <details><summary>choice</summary><ul><li>logreg</li><li>isolation</li></ul></details> | :x: | pick your choice of ML model to detect anomaly | reqruired |
    | `--model-path` | string | :x: | path to where the serialized model is | required |
    | `--input-file` | string | :x: | path to the log file to perform detection on. If this flag is missing along with `--log-line` flag we will get error. | optional |
    | `--log-line` | "string" | :x: | single input log line within double quotes for detection | optional |
    | `--output-file` | string | :x: | where output from the detection will be saved. if not provided, results will be displayed on the console. beware when using large log files for detection. | optionl |
 
-   
+
 ## Running Django
 Currently, you can deploy this django server locally and work with two of the exposes APIs through the given frontend. Steps are given below.
 
