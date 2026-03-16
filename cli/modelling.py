@@ -136,14 +136,14 @@ def main():
     parser.add_argument("--model", required=True, choices=["logreg", "isolation"], help="Model choices to pick from. Currently there are two options.")
     parser.add_argument("--data", required=True, help="path to the JSON data for training or testing")
     parser.add_argument("--model-path", default="assets/model_saves", help="path to the model")
-    parser.add_argument("--model-save-name", help="name of the joblib file to saved the model. Note: exclude .joblib extension from the name")
+    parser.add_argument("--model-save-name", help="name of the joblib file to save the model. Note: exclude .joblib extension from the name")
     parser.add_argument("--contamination", type=float, default=0.1, help="contamination value for anomalies present. Only use with isolation model.")
     parser.add_argument("--test-size", type=float, default=0.2, help="use with train mode for testi")
     parser.add_argument("--random-state", type=int, default=None, help="set value to be able to repeat your experiments.")
     parser.add_argument("--tune-threshold", action="store_true", help="Used with logreg. The ML model will adjust the threshold value itself based on given data.")
     parser.add_argument("--threshold", type=float, help="manual threshold value for logistic regression model.")
     parser.add_argument("--threshold-grid", nargs="+", type=float, help="Try out multiple threshold forl ogistic regression model training.")
-    parser.add_argument("--verbose", type=float, help="print results from test mode. classification report and confusion matrix")
+    parser.add_argument("--verbose", action="store_true", help="print results from test mode. classification report and confusion matrix")
 
     args = parser.parse_args()
 

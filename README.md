@@ -8,7 +8,7 @@ welcome welcome! We use an ML approach to detect anomalies in log files. We inco
 ```bash
 log_anomaly_detector/
 │
-├── README.md  [you are here. henlo :3]
+├── README.md  [you are here. :3]
 ├── requirements.txt 
 │
 ├── assets/
@@ -56,22 +56,51 @@ log_anomaly_detector/
 - `webapp` is not part of the log_anomaly_detector library, it is present in root just to expose some APIs to users using a web interface- detection, upload config files to generate data.
 
 ## CLI usage guide
-- to generate data
-    `python -m cli.generate_data  --config <path/to/config.yaml> --json <savepath/for/jsonl> --log <path/to/rawlogfile.log>`
+The three CLI package commands are explained below with 1 or 2 usage examples. One can also call `-h` or `--help` argument like `python -m cli.modelling -h` to get the use of each command or look at the reference below.
 
-  this command is used to generate the JSONL file data (for training supervised models) and raw log files.
+- **`cli.generate_data`**: This CLI command can be called using `python -m cli.generate_data` followed by the arguments. The command allows one to generate data from the given YAML configuration file. if argument not provided, it will look for `config.yaml` in `templates` folder. There is a default server log config file present which is sample data to work with.
+   
+   Below is the table describing each argument. All arguments are optional.
+   |  argument  |  value type  |  default value |                 description | 
+   | --------- | ------------ | ---------------------------- | ------------ |
+   |  `--config`|  string      | `'templates/config.yaml'` |  path to the config file. can be either absolute or relative path |
+   |  `--json` | string   | `'assets/data/jsonlogs.jsonl'` | path where json file will be saved |
+   |  `--log` |  string   | `'assets/logs/logs.log'`  |  path to where the raw logs will be saved |
+   | `--split`  |   float  |  :x:  | test size split percentage value  |
+   | `--train-save-name` | string  | `'trains'` | name of the train data file. without file extension |
+   | `--test-save-name` | string | `'tests'` | name of test data file. without file extension |
 
-- to train or test, a simple command looks like
-    ``python -m cli.modelling train --data <location> --model-path <path/to/serializedmodel> --model-save-name <savenamemodel> --tune-threshold`
-
-   This invokes training for the model. the data is retrieved using `data` flag, model-path will store the location of where the serialized model will be saved, model-save-name tells what the name of the serialized save file will be. tune-threshold is the property to adjust the threshold of the logistic regression model.
-
-   you can always call `python -m cli.modelling -h` to know what each flag does
-- For detection you call `cli.detect` module. 
-    example, ``python -m cli.detect logreg --model-path "assets/model_saves/logreg.joblib" --log-line "2026-02-01Z12:15:32.2345T [INFO] ...."`
-
-Planning to add more refined guide to this soon. ASAP no ROCKY.
     
+
+- **`cli.modelling`**: This command can be called using `python -m cli.modelling` followed by the arguments. This command allows one to train a model and evaluate it in test mode. Below is table describing each argument.
+
+   |  argument  |  value type  |  default value |                 description |  optional/required? |
+   | --------- | ------------ | ---------------------------- | ------------ |  ------------|
+   |  `mode`   |   choice <details><summary></summary><ul><li>train</li><li>test</li></ul></details>    |      :x: <small> it defaults to test </small>  |   positional argument. pick train or test mode. |  optional |
+   |  `--model` | choice  <details><summary></summary><ul><li>logreg</li><li>isolation</li></ul></details>   | :x: | choices of models to pick from to train or evaluate. currently there are only two options | required |
+   | `--data` | string |  :x: | path to the JSONL file for training or testing | reqruired |
+   | `--model-path` | string | `'assets/model_saves'` | path to where the model is saved or to be saved | optional |
+   | `--model-save-name` | string |  :x: | name of the file that saves model state on disk. If not given, value interpreted from default model save location and name. | optional |
+   | `--contamination` | float | 0.1 | contamination value for anomalies present in the given data. This is to be used only with training of isolation model. | optional |
+   | `--test-size` | float | 0.2 | this value can be set in `train` mode for the validation set size to set the test(validation) dataset size. | optional |
+   | `--random-state` | int | `None` | seeding for repeatable results/experiments. default set to `None` to disable seeding. | optional |
+   | `--tune-threshold` | boolean flag | `False` | if added in command, it allows the ML model of logistic regression to tune it's boundary threshold based on F1 ROC_AUC scores. | optional |
+   | `--threshold` | float | :x: | setting manual threshold value. this bypasses `tune-threshold` | optional |
+   | `--threshold-grid` | float+ | :x: | multiple threshold values can be provided as inputs and the one that produces best F1 score will be selected as best model. | optional |
+   | `--verbose` | boolean flag | `False`| this argument allows to print extra information for evaluation or training phase | optional
+
+
+- **`cli.detect`**: This small workflow command allows one to detect anomaly in a log. Can be called using `python -m cli.detect` followed by the arguments.
+
+    |  argument  |  value type  |  default value |description |  optional/required? |
+   | --------- | ------------ | ---------------------------- | ------------ |  ------------|
+   | `--model` | choice <details><summary></summary><ul><li>logreg</li><li>isolation</li></ul></details> | :x: | pick your choice of ML model to detect anomaly | reqruired |
+   | `--model-path` | string | :x: | path to where the serialized model is | required |
+   | `--input-file` | string | :x: | path to the log file to perform detection on. If this flag is missing along with `--log-line` flag we will get error. | optional |
+   | `--log-line` | "string" | :x: | single input log line within double quotes for detection | optional |
+   | `--output-file` | string | :x: | where output from the detection will be saved. if not provided, results will be displayed on the console. beware when using large log files for detection. | optionl |
+
+   
 ## Running Django
 Currently, you can deploy this django server locally and work with two of the exposes APIs through the given frontend. Steps are given below.
 

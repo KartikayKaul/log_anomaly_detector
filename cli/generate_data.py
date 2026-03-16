@@ -34,7 +34,8 @@ def main():
 
         train, test = train_test_split(
             logs,
-            test_size=args.split
+            test_size=args.split,
+            stratify=[row['category'] for row in logs]
         ) 
 
         train_path = json_path.with_name(args.train_save_name+".jsonl")
@@ -52,6 +53,7 @@ def main():
         print("\nDataset Split Complete")
         print(f"Train dataset --> {train_path}")
         print(f"Test dataset  --> {test_path}")
+        print(f"raw logs saved --> {Path(args.log).parent}")
 
     print("Log data generated successfully...")
 
