@@ -18,3 +18,5 @@ assets/temp/*
 !assets/model_saves/.gitkeep
 !assets/data/.gitkeep
 !assets/logs/.gitkeep
+slow.ipynb
+**/*/*.ipynb
