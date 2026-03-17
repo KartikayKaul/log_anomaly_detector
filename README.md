@@ -69,6 +69,7 @@ The three CLI package commands are explained below with 1 or 2 usage examples. O
    | `--split`  |   float  |  :x:  | test size split percentage value  |
    | `--train-save-name` | string  | `'trains'` | name of the train data file. without file extension |
    | `--test-save-name` | string | `'tests'` | name of test data file. without file extension |
+   | `--GPIO` | boolean flag | :x: | if this flag is enabled then workflow will change. Log file input at `--log` path will be processed to generate GPIO training and testing data |
 
     
 
