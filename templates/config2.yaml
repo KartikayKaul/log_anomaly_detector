@@ -139,69 +139,95 @@ templates:
     message: "User {username} performed upload on {resource} status={status_code} latency={latency}ms size={payload_size}kb"
 
 
-  - name: high_latency_request
+### anomaies below
+  - name: scrambled_order
     level: INFO
     category: anomaly
     service: api-service
-    message: "User {username} performed {action} on {resource} status=200 latency=950ms"
+    message: "latency={latency}ms user={username} {resource} performed action={action} status={status_code}"
 
-  - name: repeated_requests
+  - name: missing_keywords
     level: INFO
     category: anomaly
     service: api-service
-    message: "User {username} performed query on {resource} status=200 latency={latency}ms requests=25"
+    message: "{username} {action} {resource} {status_code} {latency}"
 
-  - name: large_payload_transfer
+  - name: reversed_semantics
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "{resource} performed {username} action={action} latency={latency} status={status_code}"
+
+  - name: corrupted_field_format
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User:{username}|action->{action}|resource->{resource}|status:{status_code}|latency::{latency}"
+
+  - name: random_field_shuffle
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "{latency}ms {username} performed {resource} status {status_code} action {action}"
+
+  - name: malformed_log
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "### {username} ::: {action} >>> {resource} ??? status={status_code}"
+
+  - name: partial_template
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "User {username} status={status_code}"
+
+  - name: repeated_tokens
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "{username} {username} {username} performed performed {action} {action} {resource}"
+
+  - name: nonsense_structure
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "!!! {username} *** {action} @@@ {resource} ### {status_code} $$$"
+
+  - name: garbage_mix
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "{username} 9xA2 {action} ___ {resource} 00FF latency=={latency}"
+
+  - name: broken_key_value
+    level: INFO
+    category: anomaly
+    service: api-service
+    message: "user {username} action {action} resource {resource} status {status_code} latency {latency}"
+
+  - name: corrupted_template
     level: INFO
     category: anomaly
     service: storage-service
-    message: "User {username} performed upload on {resource} status=200 latency={latency}ms size=9000kb"
+    message: "upload upload upload {resource} user user {username} size size {payload_size}"
 
-  - name: suspicious_status_pattern
+## garbage anomalies
+
+  - name: random_noise
     level: INFO
     category: anomaly
     service: api-service
-    message: "User {username} performed {action} on {resource} status=403 latency={latency}ms"
+    message: "X9AFJ2 {username} ZZZZ 00AA {resource} ***"
 
-  - name: error_burst
+  - name: hex_garbage
     level: INFO
     category: anomaly
     service: api-service
-    message: "User {username} performed {action} on {resource} status=500 latency=600ms"
-  
-  - name: high_latency_request
+    message: "0xA92F 0xFFAA {username} 0xDEAD {resource}"
+
+  - name: mixed_symbols
     level: INFO
     category: anomaly
     service: api-service
-    message: "User {username} performed {action} on {resource} status=200 latency=950ms"
-
-  - name: repeated_requests
-    level: INFO
-    category: anomaly
-    service: api-service
-    message: "User {username} performed query on {resource} status=200 latency={latency}ms requests=25"
-
-  - name: large_payload_transfer
-    level: INFO
-    category: anomaly
-    service: storage-service
-    message: "User {username} performed upload on {resource} status=200 latency={latency}ms size=9000kb"
-
-  - name: suspicious_status_pattern
-    level: INFO
-    category: anomaly
-    service: api-service
-    message: "User {username} performed {action} on {resource} status=403 latency={latency}ms"
-
-  - name: error_burst
-    level: INFO
-    category: anomaly
-    service: api-service
-    message: "User {username} performed {action} on {resource} status=500 latency=600ms"
-
-  - name: garbage
-    level: ""
-    category: anomaly
-    service: ""
-    message: ""
-    
+    message: "@@@ {username} !!! {action} ### {resource} $$$"

@@ -1,6 +1,7 @@
 """
     MODELS
-        saare chikne models idhar hai
+        all ML model architectures are to be defined here
+        
 """;
 import numpy as np
 import re
@@ -11,6 +12,30 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, roc_curve, roc_auc_score, confusion_matrix, classification_report
 
 
+## CONSTANTS
+LOG_STRUCTURE_PATTERN = re.compile(
+r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z "
+r"\[(INFO|WARN|ERROR|DEBUG)\] - "
+r"[a-zA-Z\-]+ ∣ "
+r"ip=\d{1,3}(?:\.\d{1,3}){3} - "
+r".+"
+)
+
+## UTIL functions
+def structure_valid(log: str) -> bool:
+    """
+        rule based structure filtering
+    """
+    return bool(LOG_STRUCTURE_PATTERN.match(log))
+
+def add_structure_token(log: str) -> str:
+    if structure_valid(log):
+        return "STRUCT_OK " + log
+    else:
+         return "STRUCT_BAD " + log
+
+
+## MODELS
 class TfIdfIsolationModel:
     """
         IsolationForest Model with TFIDF vectorizer for representing the text of inputs in logs
@@ -19,15 +44,16 @@ class TfIdfIsolationModel:
     def __init__(
             self,
             contamination=0.05,
-            max_features=5000,
-            ngram_range=(1, 2),
+            max_features=10000,
+            ngram_range=(2, 3),
             n_estimators=100,
             random_state=None
     ):
         self.vectorizer = TfidfVectorizer(
             max_features=max_features,
             ngram_range=ngram_range,
-            lowercase=True
+            lowercase=True,
+            analyzer="char_wb"
         )
 
         self.model = IsolationForest(
@@ -45,27 +71,55 @@ class TfIdfIsolationModel:
             devnote: can change later to customize on the basis of location
                      in log line
         """
-        # timestamp removal
-        log = re.sub(r"^\S+\s+", "", log)
-
-        # IP address
-        log = re.sub(r"\b\d{1,3}(?:\.\d{1,3}){3}\b", "<IP>", log)
-
-        # usernames
-        log = re.sub(r"User\s+\w+", "User <USER>", log)
-
-        # file paths
-        log = re.sub(r"/[A-Za-z0-9_\-./]+", "<PATH>", log)
-
-        # response time
-        log = re.sub(r"response_time=\d+(\.\d+)?ms", "response_time=<NUM>ms", log)
-
+        # normalize timestamps
+        log = re.sub(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
+            "<TIME>",
+            log
+        )
+        # normalize IP addresses
+        log = re.sub(
+            r"\b\d{1,3}(?:\.\d{1,3}){3}\b",
+            "<IP>",
+            log
+        )
+        # normalize file paths
+        log = re.sub(
+            r"/[A-Za-z0-9_\-./]+",
+            "<PATH>",
+            log
+        )
+        # normalize UUID-like tokens
+        log = re.sub(
+            r"\b[0-9a-f]{8}-[0-9a-f\-]{27}\b",
+            "<ID>",
+            log,
+            flags=re.IGNORECASE
+        )
+        # normalize standalone numbers
+        log = re.sub(
+            r"\b\d+\b",
+            "<NUM>",
+            log
+        )
+        log = re.sub(
+            r"\b[a-zA-Z0-9]{16,}\b",
+            "<HASH>",
+            log
+        )
         return log
     
     def preprocess(self, logs):
-        return [self._remove_timestamp_and_normalize(log) for log in logs]
+        processed = []
 
+        for log in logs:
+            # log = add_structure_token(log) # structure awareness
+            log = self._remove_timestamp_and_normalize(log)
 
+            processed.append(log)
+
+        return processed
+    
     def train(self, logs):
         logs = self.preprocess(logs)
 
@@ -82,6 +136,10 @@ class TfIdfIsolationModel:
         X = self.vectorizer.transform(logs)
         return self.model.predict(X)
     
+    def predict_binary(self, logs):
+        preds = self.predict(logs)
+        return np.array([1 if p == -1 else 0 for p in preds])
+
     def score_samples(self, logs):
         """
             higher = normaler
@@ -93,8 +151,7 @@ class TfIdfIsolationModel:
         return self.model.decision_function(X)
     
     def evaluate(self, logs, labels, verbose=True):
-        preds = self.predict(logs)
-        preds_binary = np.array([1 if p == -1 else 0 for p in preds])
+        preds_binary = self.predict_binary(logs)
 
         conf_matrix = confusion_matrix(labels, preds_binary)
         class_report = classification_report(labels, preds_binary)
@@ -125,7 +182,7 @@ class TfIdfLogRegModel:
     def __init__(
             self,
             max_features=5000,
-            ngram_range=(1, 2),
+            ngram_range=(2, 3),
             min_df=2,
             C=1.0,
             class_weight="balanced",
@@ -138,7 +195,8 @@ class TfIdfLogRegModel:
             ngram_range=ngram_range,
             max_features=max_features,
             min_df=min_df,
-            lowercase=True
+            lowercase=True,
+            analyzer="char_wb"
         )
 
         self.model = LogisticRegression(
@@ -153,14 +211,52 @@ class TfIdfLogRegModel:
         self.threshold = 0.5
 
     def _remove_timestamp_and_normalize(self, log: str) -> str:
-        log = re.sub(r"^\S+\s+", "", log)
-        log = re.sub(r"\b\d{1,3}(?:\.\d{1,3}){3}\b", "<IP>", log)
-        log = re.sub(r"User\s+\w+", "User <USER>", log)
+        # normalize timestamps
+        log = re.sub(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
+            "<TIME>",
+            log
+        )
+        # normalize IP addresses
+        log = re.sub(
+            r"\b\d{1,3}(?:\.\d{1,3}){3}\b",
+            "<IP>",
+            log
+        )
+        # normalize file paths
+        log = re.sub(
+            r"/[A-Za-z0-9_\-./]+",
+            "<PATH>",
+            log
+        )
+        # normalize UUID-like tokens
+        log = re.sub(
+            r"\b[0-9a-f]{8}-[0-9a-f\-]{27}\b",
+            "<ID>",
+            log,
+            flags=re.IGNORECASE
+        )
+        # normalize standalone numbers
+        log = re.sub(
+            r"\b\d+\b",
+            "<NUM>",
+            log
+        )
+        log = re.sub(
+            r"\b[a-zA-Z0-9]{16,}\b",
+            "<HASH>",
+            log
+        )
         return log
 
     def preprocess(self, logs):
-        return [self._remove_timestamp_and_normalize(log) for log in logs]
-
+        processed = []
+        for log in logs:
+            # log = add_structure_token(log)
+            log = self._remove_timestamp_and_normalize(log)
+            processed.append(log)
+        return processed
+    
     def train(self, logs, labels):
         logs = self.preprocess(logs)
         X = self.vectorizer.fit_transform(logs)

@@ -102,9 +102,9 @@ The three CLI package commands are explained below with 1 or 2 usage examples. O
 
 
 ## Running Django
-Currently, you can deploy this django server locally and work with two of the exposes APIs through the given frontend. Steps are given below.
+Currently, you can deploy this django server locally and work with two of the exposed APIs on the frontend. Steps are given below.
 
-- Navigate to the webapp folder from root folder `cd webapp`
+- Navigate to the webapp folder from project root folder `cd webapp`
 - Migration first! `python -m manage migrate`. This will set some necessary things up.
 - Now you can run the server. `python -m manage runserver`. You will get the URI to view the webpage to use the APIs in the command line itself.
 
