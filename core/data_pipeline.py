@@ -138,7 +138,3 @@ def generate_data_GPIO(input_file: str, output_file: str, test_size: float=0.0, 
 
                 out.write(record)
     print(f"GPIO sensor training data generated successfully from the logs.")
-    
-    
-    
-
